@@ -1,0 +1,281 @@
+select * from users;
+select * from categories;
+select * from products;
+select * from productattributes;
+SELECT * FROM USERFAVORITES;
+DECLARE
+    v_UserName VARCHAR2(50);
+    v_Password VARCHAR2(50);
+    v_Result BOOLEAN;
+BEGIN
+    -- Kullanýcýdan username ve password bilgilerini al
+    v_UserName := '&Enter_UserName';
+    v_Password := '&Enter_Password';
+    
+    -- Paket içindeki fonksiyonu çaðýr
+    v_Result := UserManagement.LoginFunc(v_UserName, v_Password);
+    
+    -- Sonucu kontrol et
+    IF v_Result THEN
+        DBMS_OUTPUT.PUT_LINE('Login successful');
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('Login failed');
+    END IF;
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE(SQLERRM); -- Hata mesajýný ekrana yazdýrýr
+END;
+-- þifre deðiþtirme
+
+DECLARE
+    v_UserName VARCHAR2(50);
+    v_OldPassword VARCHAR2(50);
+    v_NewPassword VARCHAR2(50);
+BEGIN
+  v_UserName := '&Enter_UserName';
+  v_OldPassword := '&Enter_OldPassword';
+  v_NewPassword := '&Enter_NewPassword';
+  
+  UserManagement.ChangePassword(v_UserName, v_OldPassword, v_NewPassword);
+end;
+
+
+
+CREATE SEQUENCE ProductID_Seq
+    START WITH 51
+    INCREMENT BY 1
+    NOCACHE;
+    
+
+BEGIN
+    v_Result := AddToBasket(1, 10, 2, 3);  -- UserID: 1, ProductID: 10, ProductAttributeID: 2, Quantity: 3
+    DBMS_OUTPUT.PUT_LINE(v_Result);
+END;
+
+  
+BEGIN
+    -- Ürün ekleme testi
+    ProductManagement.AddProduct('Yeni Ürün', 1, 99.99);
+
+END;
+/
+
+
+--ÜRÜN SÝLEN 
+BEGIN
+    ProductManagement.DeleteProduct(p_ProductID =>52 );
+END;
+
+BEGIN
+    ProductFavoritesAndFilterManagement.AddToFavorites(p_UserID => 1, p_ProductID => 1, p_ProductAttributeID => 1);
+END;
+
+
+CREATE SEQUENCE FavoriteID_Seq
+    START WITH 1
+    INCREMENT BY 1
+    NOCACHE;
+    
+BEGIN
+    -- Kullanýcý 1 için favoriye ürün ekleme
+    ProductFavoritesAndFilterManagement.AddFavorites(
+        p_UserID => 1, 
+        p_ProductID => 10, 
+        p_ProductAttributeID => 5
+    );
+
+    -- Kullanýcý 2 için favoriye ürün ekleme
+    ProductFavoritesAndFilterManagement.AddFavorites(
+        p_UserID => 2, 
+        p_ProductID => 12, 
+        p_ProductAttributeID => 14
+    );
+
+    -- Kullanýcý 3 için favoriye ürün ekleme
+    ProductFavoritesAndFilterManagement.AddFavorites(
+        p_UserID => 3, 
+        p_ProductID => 15, 
+        p_ProductAttributeID => 26
+    );
+    -- Kullanýcý 3 için favoriye ürün ekleme
+    ProductFavoritesAndFilterManagement.AddFavorites(
+        p_UserID => 3, 
+        p_ProductID => 40, 
+        p_ProductAttributeID => 26
+    );
+END;
+BEGIN
+    -- Favorilere ürün ekleme
+    ProductFavoritesAndFilterManagement.AddFavorites(p_UserID => 1, p_ProductID => 1, p_ProductAttributeID => 1);
+    ProductFavoritesAndFilterManagement.AddFavorites(p_UserID => 1, p_ProductID => 2, p_ProductAttributeID => 2);
+    ProductFavoritesAndFilterManagement.AddFavorites(p_UserID => 1, p_ProductID => 3, p_ProductAttributeID => 3);
+    ProductFavoritesAndFilterManagement.AddFavorites(p_UserID => 1, p_ProductID => 4, p_ProductAttributeID => 4);
+    ProductFavoritesAndFilterManagement.AddFavorites(p_UserID => 1, p_ProductID => 5, p_ProductAttributeID => 5);
+    ProductFavoritesAndFilterManagement.AddFavorites(p_UserID => 1, p_ProductID => 6, p_ProductAttributeID => 6);
+    ProductFavoritesAndFilterManagement.AddFavorites(p_UserID => 1, p_ProductID => 7, p_ProductAttributeID => 7);
+    ProductFavoritesAndFilterManagement.AddFavorites(p_UserID => 1, p_ProductID => 8, p_ProductAttributeID => 8);
+    ProductFavoritesAndFilterManagement.AddFavorites(p_UserID => 1, p_ProductID => 9, p_ProductAttributeID => 9);
+    ProductFavoritesAndFilterManagement.AddFavorites(p_UserID => 1, p_ProductID => 10, p_ProductAttributeID => 10);
+    ProductFavoritesAndFilterManagement.AddFavorites(p_UserID => 1, p_ProductID => 11, p_ProductAttributeID => 11);
+    ProductFavoritesAndFilterManagement.AddFavorites(p_UserID => 1, p_ProductID => 12, p_ProductAttributeID => 12);
+    ProductFavoritesAndFilterManagement.AddFavorites(p_UserID => 1, p_ProductID => 13, p_ProductAttributeID => 13);
+    ProductFavoritesAndFilterManagement.AddFavorites(p_UserID => 1, p_ProductID => 14, p_ProductAttributeID => 14);
+    ProductFavoritesAndFilterManagement.AddFavorites(p_UserID => 1, p_ProductID => 15, p_ProductAttributeID => 15);
+    ProductFavoritesAndFilterManagement.AddFavorites(p_UserID => 1, p_ProductID => 16, p_ProductAttributeID => 16);
+    ProductFavoritesAndFilterManagement.AddFavorites(p_UserID => 1, p_ProductID => 17, p_ProductAttributeID => 17);
+    ProductFavoritesAndFilterManagement.AddFavorites(p_UserID => 1, p_ProductID => 18, p_ProductAttributeID => 18);
+    ProductFavoritesAndFilterManagement.AddFavorites(p_UserID => 1, p_ProductID => 19, p_ProductAttributeID => 19);
+    ProductFavoritesAndFilterManagement.AddFavorites(p_UserID => 1, p_ProductID => 20, p_ProductAttributeID => 20);
+
+    -- Tekrarlayan ürün ekleme
+    ProductFavoritesAndFilterManagement.AddFavorites(p_UserID => 1, p_ProductID => 1, p_ProductAttributeID => 1);
+    ProductFavoritesAndFilterManagement.AddFavorites(p_UserID => 1, p_ProductID => 2, p_ProductAttributeID => 2);
+    ProductFavoritesAndFilterManagement.AddFavorites(p_UserID => 1, p_ProductID => 3, p_ProductAttributeID => 3);
+    ProductFavoritesAndFilterManagement.AddFavorites(p_UserID => 1, p_ProductID => 4, p_ProductAttributeID => 4);
+    ProductFavoritesAndFilterManagement.AddFavorites(p_UserID => 1, p_ProductID => 5, p_ProductAttributeID => 5);
+    ProductFavoritesAndFilterManagement.AddFavorites(p_UserID => 1, p_ProductID => 6, p_ProductAttributeID => 6);
+     ProductFavoritesAndFilterManagement.AddFavorites(p_UserID => 2, p_ProductID => 1, p_ProductAttributeID => 1);
+    ProductFavoritesAndFilterManagement.AddFavorites(p_UserID => 2, p_ProductID => 2, p_ProductAttributeID => 2);
+    ProductFavoritesAndFilterManagement.AddFavorites(p_UserID => 2, p_ProductID => 3, p_ProductAttributeID => 3);
+    ProductFavoritesAndFilterManagement.AddFavorites(p_UserID => 2, p_ProductID => 4, p_ProductAttributeID => 4);
+    ProductFavoritesAndFilterManagement.AddFavorites(p_UserID => 2, p_ProductID => 5, p_ProductAttributeID => 5);
+    ProductFavoritesAndFilterManagement.AddFavorites(p_UserID => 2, p_ProductID => 6, p_ProductAttributeID => 6);
+    ProductFavoritesAndFilterManagement.AddFavorites(p_UserID => 3, p_ProductID => 6, p_ProductAttributeID => 6);
+END;
+
+
+--favorilerden ürün çýkarma
+BEGIN
+   -- Kullanýcý 1'in favorilerinden bir ürünü çýkarma
+   ProductFavoritesAndFilterManagement.RemoveFavorite(p_UserID => 1, p_ProductID => 10, p_ProductAttributeID => 5);
+   
+   -- Baþka bir ürünü çýkarma
+   ProductFavoritesAndFilterManagement.RemoveFavorite(p_UserID => 1, p_ProductID => 2, p_ProductAttributeID => 2);
+
+   -- Farklý bir kullanýcý için çýkarma iþlemi
+   ProductFavoritesAndFilterManagement.RemoveFavorite(p_UserID => 2, p_ProductID => 10, p_ProductAttributeID => 5);
+
+   -- Favorilerde olmayan bir ürünü çýkarmayý deneme (baþarýsýz olmalý)
+   ProductFavoritesAndFilterManagement.RemoveFavorite(p_UserID => 1, p_ProductID => 99, p_ProductAttributeID => 1);
+END;
+DECLARE
+    v_Result SYS_REFCURSOR;
+    v_ProductID INT;
+    v_ProductName VARCHAR2(100);
+    v_Price NUMBER(10,2);
+    v_FavoriteCount INT;
+BEGIN
+    -- Fonksiyonu çaðýr ve SYS_REFCURSOR'u al
+    v_Result := ProductFavoritesAndFilterManagement.FilterProducts(
+        p_CategoryID => 8,  -- Örnek kategori ID
+        p_MinPrice => 50,   -- Minimum fiyat
+        p_MaxPrice => 200,  -- Maksimum fiyat
+        p_AttributeName1 => 'Renk', 
+        p_AttributeValue1 => 'Kýrmýzý',
+        p_AttributeName2 => 'Beden',
+        p_AttributeValue2 => 'M',
+        p_AttributeName3 => 'Malzeme',
+        p_AttributeValue3 => 'Pamuk',
+        p_SortBy => 'FavoriteCount',  -- Sýralama kriteri (FavoriteCount veya Price)
+        p_SortOrder => 'DESC'         -- Sýralama düzeni (ASC veya DESC)
+    );
+
+    -- SYS_REFCURSOR içindeki sonuçlarý döngüyle iþliyoruz
+    LOOP
+        FETCH v_Result INTO v_ProductID, v_ProductName, v_Price, v_FavoriteCount;
+        EXIT WHEN v_Result%NOTFOUND;
+
+        -- Sonuçlarý ekrana yazdýrýyoruz
+        DBMS_OUTPUT.PUT_LINE('Product ID: ' || v_ProductID || ', Name: ' || v_ProductName || ', Price: ' || v_Price ||
+                             ', Favorite Count: ' || v_FavoriteCount);
+    END LOOP;
+
+    -- CURSOR'u kapatýyoruz
+    CLOSE v_Result;
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Hata: ' || SQLERRM);
+END;
+
+--sepete ürün ekleme
+DECLARE
+    v_Message VARCHAR2(100);
+BEGIN
+    -- Örnek olarak UserID = 1, ProductID = 101 ve Quantity = 2 için
+    v_Message := ShoppingCart.AddToBasket(1, 101, NULL, 2);
+
+    DBMS_OUTPUT.PUT_LINE(v_Message);
+END;
+/
+--SEPETTEN ÜRÜN ÇIKARMA
+BEGIN
+    -- Örnek olarak UserID = 1, ProductID = 101 ve Quantity = 1 için
+    ShoppingCart.RemoveFromBasket(1, 101, NULL, 1);
+
+    DBMS_OUTPUT.PUT_LINE('Ürün sepetteki miktarý azaltýldý veya tamamen çýkarýldý.');
+END;
+
+--SEPET ÝÇERÝNÝ DÖNDÜRME
+DECLARE
+    v_Basket SYS_REFCURSOR;
+    v_BasketID INT;
+    v_ProductName VARCHAR2(100);
+    v_AttributeName VARCHAR2(100);
+    v_AttributeValue VARCHAR2(100);
+    v_Quantity INT;
+    v_Price NUMBER(10,2);
+BEGIN
+    -- Fonksiyonu çaðýr
+    v_Basket := ShoppingCart.GetBasketContent(p_UserID => 1);
+    
+    -- Sepet içeriðini döngüyle iþleme
+    LOOP
+        FETCH v_Basket INTO v_BasketID, v_ProductName, v_AttributeName, v_AttributeValue, v_Quantity, v_Price;
+        EXIT WHEN v_Basket%NOTFOUND;
+
+        -- Sonuçlarý ekrana yazdýr
+        DBMS_OUTPUT.PUT_LINE('Basket ID: ' || v_BasketID || 
+                             ', Product: ' || v_ProductName || 
+                             ', Attribute: ' || v_AttributeName || 
+                             ', Value: ' || v_AttributeValue || 
+                             ', Quantity: ' || v_Quantity || 
+                             ', Price: ' || v_Price);
+    END LOOP;
+
+    -- CURSOR'u kapat
+    CLOSE v_Basket;
+END;
+
+BEGIN
+    BUYINGBASKET.BuyBasket(1);  -- 1 numaralý kullanýcý için sepeti satýn al
+END;
+SELECT * FROM BASKET;
+SELECT * FROM ORDERS;
+SELECT * FROM OrderItems;
+
+
+-- Kullanýcýnýn geçmiþ alýþveriþlerini listeleme
+DECLARE
+    v_History SYS_REFCURSOR;
+    v_OrderID INT;
+    v_OrderDate DATE;
+    v_ProductID INT;
+    v_ProductName VARCHAR2(100);
+    v_Quantity INT;
+    v_Price NUMBER(10,2);
+    v_TotalPrice NUMBER(10,2);
+BEGIN
+    v_History := ListHistory.GetOrderHistory(p_UserID => 1);
+
+    LOOP
+        FETCH v_History INTO v_OrderID, v_OrderDate, v_ProductID, v_ProductName, v_Quantity, v_Price, v_TotalPrice;
+        EXIT WHEN v_History%NOTFOUND;
+        DBMS_OUTPUT.PUT_LINE('OrderID: ' || v_OrderID || ', Date: ' || v_OrderDate || 
+                             ', Product: ' || v_ProductName || ', Quantity: ' || v_Quantity ||
+                             ', Price: ' || v_Price || ', Total: ' || v_TotalPrice);
+    END LOOP;
+
+    CLOSE v_History;
+END;
+
+

@@ -1,0 +1,7 @@
+create or replace package ListHistory is
+
+    FUNCTION GetOrderHistory(p_UserID IN INT) RETURN SYS_REFCURSOR;
+    PROCEDURE ExportOrderHistoryToCSV(p_UserID IN INT, p_CSVPath IN VARCHAR2);
+
+end ListHistory;
+/

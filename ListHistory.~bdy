@@ -1,0 +1,72 @@
+﻿create or replace package body ListHistory is
+
+ -- Kullanicinin geçmi? alisverislerini listeleyen prosedür
+      FUNCTION GetOrderHistory(p_UserID IN INT) RETURN SYS_REFCURSOR IS
+        v_Result SYS_REFCURSOR;
+    BEGIN
+        OPEN v_Result FOR
+        SELECT 
+            o.OrderID,
+            o.OrderDate,
+            i.ProductID,
+            p.ProductName,
+            i.Quantity,
+            i.Price,
+            (i.Quantity * i.Price) AS TotalPrice
+        FROM 
+            Orders o
+        JOIN 
+            OrderItems i ON o.OrderID = i.OrderID
+        JOIN 
+            Products p ON i.ProductID = p.ProductID
+        WHERE 
+            o.UserID = p_UserID
+        ORDER BY 
+            o.OrderDate DESC;--azalan
+        
+        RETURN v_Result;
+    END GetOrderHistory;
+    
+    PROCEDURE ExportOrderHistoryToCSV(p_UserID IN INT, p_CSVPath IN VARCHAR2) IS
+        v_Cursor SYS_REFCURSOR;
+        v_Line VARCHAR2(4000);
+        v_File UTL_FILE.FILE_TYPE;--dosya iþlemleri için csv tipinde
+        v_OrderID INT;
+        v_OrderDate DATE;
+        v_ProductID INT;
+        v_ProductName VARCHAR2(100);
+        v_Quantity INT;
+        v_Price NUMBER(10,2);
+        v_TotalPrice NUMBER(10,2);
+    BEGIN
+        -- Kullanycynyn geçmi? aly?veri?lerini alyn
+        v_Cursor := GetOrderHistory(p_UserID);
+
+        -- CSV dosyasyny olu?tur
+        v_File := UTL_FILE.FOPEN(p_CSVPath, 'OrderHistory_' || p_UserID || '.csv', 'w', 4000);-- -4000 karakterlik alan 
+
+        -- CSV ba?lyklaryny yaz
+        UTL_FILE.PUT_LINE(v_File, 'OrderID,OrderDate,ProductID,ProductName,Quantity,Price,TotalPrice');
+
+        -- Satyrlary CSV dosyasyna yaz
+        LOOP
+            FETCH v_Cursor INTO v_OrderID, v_OrderDate, v_ProductID, v_ProductName, v_Quantity, v_Price, v_TotalPrice;-- cursordaki deðerleri deðiþkenlere atar
+            EXIT WHEN v_Cursor%NOTFOUND;-- döngüde yeni kayýt yoksa sonlanýr
+
+            v_Line := v_OrderID || ',' || TO_CHAR(v_OrderDate, 'YYYY-MM-DD') || ',' ||
+                      v_ProductID || ',' || v_ProductName || ',' ||
+                      v_Quantity || ',' || v_Price || ',' || v_TotalPrice;
+            UTL_FILE.PUT_LINE(v_File, v_Line);
+        END LOOP;
+
+        -- Dosyayy kapat
+        UTL_FILE.FCLOSE(v_File);
+        CLOSE v_Cursor;
+    EXCEPTION
+    WHEN OTHERS THEN
+        UTL_FILE.FCLOSE(v_File);
+        DBMS_OUTPUT.PUT_LINE('Hata: ' || SQLERRM);
+        RAISE;
+    END ExportOrderHistoryToCSV;
+end ListHistory;
+/
